@@ -5,7 +5,7 @@
 
     	var text = document.getElementById('update').textContent;
     console.log('text: ', text);
-    	responsiveVoice.speak(text);
+    	responsiveVoice.speak(text, "UK English Male");
     }
 
     playText();

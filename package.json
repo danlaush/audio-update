@@ -1,0 +1,19 @@
+{
+  "name": "audio-update",
+  "version": "1.0.0",
+  "description": "Webapp to play a customised audio update. Get date & time, news, weather and more.",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danlaush/audio-update.git"
+  },
+  "author": "Dan Laush",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danlaush/audio-update/issues"
+  },
+  "homepage": "https://github.com/danlaush/audio-update#readme"
+}
