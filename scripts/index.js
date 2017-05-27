@@ -1,7 +1,13 @@
 (function() {
     console.log('loading the audio update');
-    var text = document.getElementById('update').textContent;
-    console.log('text: ', text);
 
-    responsiveVoice.speak(text);
+    function playText() {
+
+    	var text = document.getElementById('update').textContent;
+    console.log('text: ', text);
+    	responsiveVoice.speak(text);
+    }
+
+    playText();
+    document.getElementById('play').addEventListener('click', playText);
 })();
