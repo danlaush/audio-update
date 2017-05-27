@@ -1,13 +1,31 @@
 (function() {
     console.log('loading the audio update');
 
-    function playText() {
+    function AudioUpdate(config) {
 
-    	var text = document.getElementById('update').textContent;
-    console.log('text: ', text);
-    	responsiveVoice.speak(text, "UK English Male");
+    	this.text = config.text || "Good morning Daniel";
+    	this.voice = config.voice || "UK English Female";
+
+    	this.init();
     }
 
-    playText();
-    document.getElementById('play').addEventListener('click', playText);
+    AudioUpdate.prototype.init = function() {
+    	console.log('AudioUpdate.init()');
+    	var self = this;
+    	self.playButton = document.getElementById('play');
+    	self.playButton.addEventListener('click', self.speak.bind(this));
+    }
+
+    AudioUpdate.prototype.speak = function() {
+    	console.log('AudioUpdate.speak()');
+    	console.log(this.text);
+    	responsiveVoice.speak(this.text, this.voice);
+    }
+
+    var newUpdate = new AudioUpdate({
+    	text: 'Hello, Daniel'
+    });
+
+    // newUpdate.speak();
+
 })();
