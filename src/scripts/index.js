@@ -5,7 +5,7 @@ var myUpdate = new AudioUpdate({
 	text: 'Good morning Daniel',
 	modulesData: [
 		{type: 'text', text: 'Good morning Daniel.'},
-		{type: 'date', text: 'Today is %d.'}
+		{type: 'date', text: 'Today is Sunday, May 28th.'}
 	]
 });
 // console.log(myUpdate.myPrint());

@@ -166,7 +166,7 @@ var AudioUpdate = require('./AudioUpdate');
 console.log('loading the audio update');
 var myUpdate = new AudioUpdate({
 	text: 'Good morning Daniel',
-	modulesData: [{ type: 'text', text: 'Good morning Daniel.' }, { type: 'date', text: 'Today is %d.' }]
+	modulesData: [{ type: 'text', text: 'Good morning Daniel.' }, { type: 'date', text: 'Today is Sunday, May 28th.' }]
 });
 // console.log(myUpdate.myPrint());
 
