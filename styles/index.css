@@ -10,3 +10,20 @@ body {
 	padding: 20px;
 	border: 1px solid black;
 }
+
+.module {
+	margin-bottom: 10px;
+}
+
+.modules {
+	margin-bottom: 20px;
+}
+
+.module label, .module input {
+	display: inline-block;
+	padding: 10px;
+}
+
+.module input {
+	margin-left: 20px;
+}
