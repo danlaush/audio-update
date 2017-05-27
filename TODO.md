@@ -7,6 +7,6 @@
 - [ ] Add text module
 - [ ] Add datetime module (moment?)
 - [ ] Add customisable module system
-- [ ] Add text generation button
+- [x] Add text generation button
 - [ ] Add text pause button
 - [ ] Add text rewind button(?)
