@@ -15,15 +15,12 @@ In the morning, be woken up by the morning update. The audio script is a customi
 
 ## Process
 
-* User navigates to website, logs in
+* User navigates to website
 * User drags and drops modules in a list
 * User clicks play to test audio track
 * User sets schedule when update should play (weekdays at 6:45am, etc)
 * User saves their changes
-* [Somehow]
-** Server saves the user's script
-** 15min before start time, server generates new mp3
-** User's device plays the mp3 at the appointed time
+* User sets up [Tasker](https://play.google.com/store/apps/details?id=net.dinglisch.android.taskerm&hl=en) to open the webpage at a given time
 
 ## Challenges
 
@@ -35,10 +32,10 @@ Text To Speech (TTS)
 
 Playing media
 
-* Option 1: Native alarm. Already use it/easy to use, would set ringtone to particular audio file and overwrite that file every day. Challenges: Have to figure out how to write to android disk. Java?? D:
-* Option 2: Tasker. Can queue up downloading of new file every day (wget or similar?) and then queue audio file to play at a given time. Tasker costs money, harder to share with others.
-* Option 3: Build an app where the user can schedule download and play media. Takes the most time but best for sharing.
-* Option 4: Tasker. Can set up a voice command to "Play the morning update". AutoVoice is like custom Ok Google. https://www.lifehacker.com.au/2013/09/how-to-create-custom-voice-commands-with-tasker-and-autovoice/
+* ~~Option 1: Native alarm. Already use it/easy to use, would set ringtone to particular audio file and overwrite that file every day. Challenges: Have to figure out how to write to android disk. Java?? D:~~
+* ~~Option 2: Tasker. Can queue up downloading of new file every day (wget or similar?) and then queue audio file to play at a given time. Tasker costs money, harder to share with others.~~
+* ~~Option 3: Build an app where the user can schedule download and play media. Takes the most time but best for sharing.~~
+* ~~Option 4: Tasker. Can set up a voice command to "Play the morning update". AutoVoice is like custom Ok Google.~~ https://www.lifehacker.com.au/2013/09/how-to-create-custom-voice-commands-with-tasker-and-autovoice/
 * Option 5: Tasker. Open WebView and run custom javascript. Could open website and play saved config.
 
 Speaker
@@ -48,8 +45,9 @@ Speaker
 
 Scheduling text fetch command to generate audio script
 
-* Option 1: Set up node server that saves user config and can schedule generating the audio file shortly before the phone will download it. More complex in the long run, having to run the fetch on the server and then wait with it until the phone requests it.
-* Option 2: App on the phone manages scheduling, audio script structure, fetching remote data (news/weather), generating text string, and playing media. Node server simply accepts text strings and returns an audio file. Would it even be possible to do TTS on the phone? No idea how to program that...
+* ~~Option 1: Set up node server that saves user config and can schedule generating the audio file shortly before the phone will download it. More complex in the long run, having to run the fetch on the server and then wait with it until the phone requests it.~~
+* ~~Option 2: App on the phone manages scheduling, audio script structure, fetching remote data (news/weather), generating text string, and playing media. Node server simply accepts text strings and returns an audio file. Would it even be possible to do TTS on the phone? No idea how to program that...~~
+* Option 3: Web front end to manage script modules & play audio. No generating files, no storage (except localstorage). Tasker can open the page with an autoplay flag, and the app loads config from local storage, generates the text script with updated remote data (weather, news, calendar) and plays the audio when it's ready.
 
 
 
