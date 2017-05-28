@@ -32,15 +32,22 @@ class AudioUpdateModule {
     }
 
     renderText() {
-        console.log('AudioUpdateModule.render()');
+        console.log('AudioUpdateModule.renderText()');
         var container = document.createElement('div');
         return container;
     }
 
     renderDate() {
-        console.log('AudioUpdateModule.render()');
+        console.log('AudioUpdateModule.renderDate()');
         var container = document.createElement('div');
         return container
+    }
+
+    getData() {
+        return {
+            type: this.type,
+            text: this.text
+        }
     }
 
     myPrint() {

@@ -15,6 +15,6 @@ These are not in order. And probably don't make much sense.
 - [ ] Add text rewind button(?)
 - [ ] Add module class to store info about script modules
 - [ ] Get save/load with localStorage working
-- [ ] Transpile ES6 so it can require and arrow function and class and all that
-- [ ] Migrate original code to classes/modules
+- [x] Transpile ES6 so it can require and arrow function and class and all that
+- [x] Migrate original code to classes/modules
 - [ ] App should pause until ResponsiveVoice has been loaded
