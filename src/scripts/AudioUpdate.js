@@ -64,7 +64,7 @@ class AudioUpdate {
 		var defaultProps = {
 			modules: [
 				{type: 'text', text: 'Good morning Daniel.'},
-				{type: 'date', text: 'Today is Sunday, May 28th.'}
+				{type: 'date', text: 'Today is {dddd} {MMM} {Do}'}
 			]
 		}
 		this.data = defaultProps;
