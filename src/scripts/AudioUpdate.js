@@ -21,29 +21,29 @@ class AudioUpdate {
 		// this.voice = (typeof props.voice !== 'undefined') ? props.voice : 'UK English Female';
 		// this.modulesData = (typeof props.modulesData !== 'undefined') ? props.modulesData : {};
 		// this.modules = [];
-		self.SELECTORS = SELECTORS;
-		self.textPreview = document.getElementById(self.SELECTORS.textPreview);
-		self.modulesContainer = document.getElementById(self.SELECTORS.modulesContainer);
+		self.textPreview = document.getElementById(SELECTORS.textPreview);
+		self.modulesContainer = document.getElementById(SELECTORS.modulesContainer);
 
-		self.playButton = document.getElementById(self.SELECTORS.playButton);
+		self.playButton = document.getElementById(SELECTORS.playButton);
 		self.playButton.addEventListener('click', self.speak.bind(this));
 
-		self.saveButton = document.getElementById(self.SELECTORS.saveButton);
+		self.saveButton = document.getElementById(SELECTORS.saveButton);
 		self.saveButton.addEventListener('click', self.save.bind(this));
 
-		self.loadButton = document.getElementById(self.SELECTORS.loadButton);
+		self.loadButton = document.getElementById(SELECTORS.loadButton);
 		self.loadButton.addEventListener('click', self.load.bind(this));
 
-		self.deleteButton = document.getElementById(self.SELECTORS.deleteButton);
+		self.deleteButton = document.getElementById(SELECTORS.deleteButton);
 		self.deleteButton.addEventListener('click', self.delete.bind(this));
 
 		
 		self.data = this.load();
 		if(self.data === null) {
 			self.data = self.init();
+		} else {
+			self.buildModules();
 		}
 
-		self.buildModules();
 		self.generateText();
 		// This uses several similar terms for similar items.
 		// text: The string stored in AudioUpdate which gets read out
@@ -53,7 +53,7 @@ class AudioUpdate {
 		
 		// self.update();
 
-		// self.updateScriptButton = document.getElementById(self.SELECTORS.updateScriptButton);
+		// self.updateScriptButton = document.getElementById(SELECTORS.updateScriptButton);
 		// self.updateScriptButton.addEventListener('click', self.update.bind(this));
 	}
 
@@ -67,7 +67,8 @@ class AudioUpdate {
 				{type: 'date', text: 'Today is Sunday, May 28th.'}
 			]
 		}
-		this.modules = defaultProps.modules;
+		this.data = defaultProps;
+		this.buildModules();
 		this.save();
 		return defaultProps;
 	}
@@ -83,17 +84,28 @@ class AudioUpdate {
 		});
 	}
 
-	// getAllModules() {
-	// 	console.log('AudioUpdate.getAllModules()');
-	// 	return this.modules;
-	// }
+	// returns an Array of AudioUpdateModules, with updated data from the DOM
+	getAllModules() {
+		console.log('AudioUpdate.getAllModules()');
+		// loop through modules in DOM and extract type & text
+		var modules = this.modulesContainer.getElementsByClassName('module');
+		var modulesData = Array.prototype.map.call(modules, function(module) {
+			// This map should create AudioUpdateModules?
+			// Functionality below should be stored in AudioUpdateModule as getData()
+			return {
+				type: module.dataset.moduleType,
+				text: module.querySelectorAll('input')[0].value
+			}
+		});
+		return modulesData;
+	}
 
 	generateText() {
 		console.log('AudioUpdate.generateText()');
 		var text = this.modules.reduce(function(acc, module) {
 			console.log('acc: ', acc);
-			console.log('module: ', module);
-			return acc.text += " " + module.text + " ";
+			console.log('module: ', module.renderText());
+			return acc.renderText() + " " + module.renderText() + " ";
 		});
 		self.textPreview.innerHTML = text;
 	}
@@ -119,15 +131,13 @@ class AudioUpdate {
 
 	save() {
 		console.log('AudioUpdate.save()');
-		console.log(this.modules);
 		var data = {};
-		data.modules = this.data.map(function(module) {
-			return module.getData();
-		});
-		console.log('data: ', data);
+		data.modules = this.getAllModules();
+		this.data = data;
 		if (typeof(Storage) !== "undefined") {
 			// Code for localStorage/sessionStorage.
 			localStorage.setItem('audio-update', JSON.stringify(data));
+			this.generateText();
 		} else {
 			// Sorry! No Web Storage support..
 			alert('Sorry, your browser doesn\'t support Local Storage. Please upgrade to a newer browser.');
