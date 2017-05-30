@@ -16,11 +16,6 @@ class AudioUpdate {
 		console.log('AudioUpdate.constructor()');
 		var self = this;
 
-		// this.text = "Something to export plus " + new AudioUpdateModule().myPrint();
-		// this.text = (typeof props.text !== 'undefined') ? props.text : 'Good morning Daniel';
-		// this.voice = (typeof props.voice !== 'undefined') ? props.voice : 'UK English Female';
-		// this.modulesData = (typeof props.modulesData !== 'undefined') ? props.modulesData : {};
-		// this.modules = [];
 		self.textPreview = document.getElementById(SELECTORS.textPreview);
 		self.modulesContainer = document.getElementById(SELECTORS.modulesContainer);
 
@@ -28,23 +23,24 @@ class AudioUpdate {
 		self.playButton.addEventListener('click', self.speak.bind(this));
 
 		self.saveButton = document.getElementById(SELECTORS.saveButton);
-		self.saveButton.addEventListener('click', self.save.bind(this));
+		self.saveButton.addEventListener('click', self.saveChanges.bind(this));
 
 		self.loadButton = document.getElementById(SELECTORS.loadButton);
-		self.loadButton.addEventListener('click', self.load.bind(this));
+		self.loadButton.addEventListener('click', self.loadFromStorage.bind(this));
 
 		self.deleteButton = document.getElementById(SELECTORS.deleteButton);
-		self.deleteButton.addEventListener('click', self.delete.bind(this));
+		self.deleteButton.addEventListener('click', self.deleteFromStorage.bind(this));
 
 		
-		self.data = this.load();
+		self.data = this.loadFromStorage();
 		if(self.data === null) {
-			self.data = self.init();
-		} else {
-			self.buildModules();
+			self.init();
 		}
 
-		self.generateText();
+		self.buildModulesFromData();
+		self.renderModules();
+		self.updateText();
+		self.updateTextPreview();
 		// This uses several similar terms for similar items.
 		// text: The string stored in AudioUpdate which gets read out
 		// textPreview: The HTML displayed to the user of the text which will get read out
@@ -68,88 +64,90 @@ class AudioUpdate {
 			]
 		}
 		this.data = defaultProps;
-		this.buildModules();
-		this.save();
-		return defaultProps;
+		this.saveToStorage();
 	}
 
 	// constructs modules on load
-	buildModules() {
-		console.log('AudioUpdate.buildModules()');
+	buildModulesFromData() {
+		console.log('AudioUpdate.buildModulesFromData()');
 		var self = this;
 		this.modules = this.data.modules.map(function(moduleData) {
 			var module = new AudioUpdateModule(moduleData);
-			self.modulesContainer.appendChild(module.render());
 			return module;
 		});
 	}
 
-	// returns an Array of AudioUpdateModules, with updated data from the DOM
-	getAllModules() {
-		console.log('AudioUpdate.getAllModules()');
+	// loop through 
+	renderModules() {
+		console.log('AudioUpdate.renderModules()');
+		var self = this;
+		for(var module of self.modules) {
+			self.modulesContainer.appendChild(module.render());
+		}
+	}
+
+	// returns an Array of Objects, with updated data from the DOM
+	updateModules() {
+		console.log('AudioUpdate.updateModules()');
 		// loop through modules in DOM and extract type & text
 		var modules = this.modulesContainer.getElementsByClassName('module');
-		var modulesData = Array.prototype.map.call(modules, function(module) {
+		this.modules = Array.prototype.map.call(modules, function(module) {
 			// This map should create AudioUpdateModules?
 			// Functionality below should be stored in AudioUpdateModule as getData()
-			return {
+			return new AudioUpdateModule({
 				type: module.dataset.moduleType,
 				text: module.querySelectorAll('input')[0].value
-			}
+			});
 		});
-		return modulesData;
 	}
 
-	generateText() {
-		console.log('AudioUpdate.generateText()');
+	updateText() {
+		console.log('AudioUpdate.updateText()');
 		var text = this.modules.reduce(function(acc, module) {
-			console.log('acc: ', acc);
-			console.log('module: ', module.renderText());
 			return acc.renderText() + " " + module.renderText() + " ";
 		});
-		this.text = self.textPreview.innerHTML = text;
+		this.text = text;
 	}
-
-	// update() {
-	// 	console.log('AudioUpdate.update()');
-	// 	this.text = "";
-	// 	this.modulesContainer.innerHTML = '';
-	// 	for(var key in this.modulesData) {
-	// 		var module = new AudioUpdateModule(this.modulesData[key]);
-	// 		this.text += module.text + ' ';
-	// 		this.modules.push(module);
-	// 		this.modulesContainer.appendChild(module.render());
-
-	// 	}
-	// 	this.updateTextPreview();
-	// }
 
 	updateTextPreview() {
 		console.log('AudioUpdate.updateTextPreview()');
 		this.textPreview.innerHTML = this.text;
 	}
 
-	save() {
-		console.log('AudioUpdate.save()');
-		var self = this;
+	updateData() {
+		console.log('AudioUpdate.updateData()');
 		var data = {};
-		data.modules = this.getAllModules();
+		data.modules = this.modules.map(function(module) {
+			return module.getData();
+		});
 		this.data = data;
+	}
+
+	saveChanges() {
+		console.log('AudioUpdate.saveChanges()');
+		this.updateModules();
+		this.updateData();
+		this.saveToStorage();
+		this.updateText();
+		this.updateTextPreview();
+	}
+
+	saveToStorage() {
+		console.log('AudioUpdate.saveToStorage()');
+		var self = this;
 		if (typeof(Storage) !== "undefined") {
 			// Code for localStorage/sessionStorage.
-			localStorage.setItem('audio-update', JSON.stringify(data));
-			self.generateText();
+			localStorage.setItem('audio-update', JSON.stringify(self.data));
 		} else {
 			// Sorry! No Web Storage support..
 			alert('Sorry, your browser doesn\'t support Local Storage. Please upgrade to a newer browser.');
 		}
 	}
 
-	load() {
+	loadFromStorage() {
 		console.log('AudioUpdate.load()');
 		if (typeof(Storage) !== "undefined") {
 			var data = JSON.parse(localStorage.getItem('audio-update'));
-			// console.log('data: ', data);
 			return data;
 		} else {
 			alert('Sorry, your browser doesn\'t support Local Storage. Please upgrade to a newer browser.');
@@ -157,7 +155,7 @@ class AudioUpdate {
 		return;
 	}
 
-	delete() {
+	deleteFromStorage() {
 		console.log('AudioUpdate.delete()');
 		if (typeof(Storage) !== "undefined") {
 			localStorage.removeItem('audio-update');
