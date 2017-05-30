@@ -4490,11 +4490,6 @@ var AudioUpdate = function () {
 		console.log('AudioUpdate.constructor()');
 		var self = this;
 
-		// this.text = "Something to export plus " + new AudioUpdateModule().myPrint();
-		// this.text = (typeof props.text !== 'undefined') ? props.text : 'Good morning Daniel';
-		// this.voice = (typeof props.voice !== 'undefined') ? props.voice : 'UK English Female';
-		// this.modulesData = (typeof props.modulesData !== 'undefined') ? props.modulesData : {};
-		// this.modules = [];
 		self.textPreview = document.getElementById(SELECTORS.textPreview);
 		self.modulesContainer = document.getElementById(SELECTORS.modulesContainer);
 
@@ -4502,32 +4497,25 @@ var AudioUpdate = function () {
 		self.playButton.addEventListener('click', self.speak.bind(this));
 
 		self.saveButton = document.getElementById(SELECTORS.saveButton);
-		self.saveButton.addEventListener('click', self.save.bind(this));
-
-		self.loadButton = document.getElementById(SELECTORS.loadButton);
-		self.loadButton.addEventListener('click', self.load.bind(this));
+		self.saveButton.addEventListener('click', self.saveChanges.bind(this));
 
 		self.deleteButton = document.getElementById(SELECTORS.deleteButton);
-		self.deleteButton.addEventListener('click', self.delete.bind(this));
+		self.deleteButton.addEventListener('click', self.deleteFromStorage.bind(this));
 
-		self.data = this.load();
+		self.data = this.loadFromStorage();
 		if (self.data === null) {
-			self.data = self.init();
-		} else {
-			self.buildModules();
+			self.init();
 		}
 
-		self.generateText();
+		self.buildModulesFromData();
+		self.renderModules();
+		self.updateText();
+		self.updateTextPreview();
 		// This uses several similar terms for similar items.
 		// text: The string stored in AudioUpdate which gets read out
 		// textPreview: The HTML displayed to the user of the text which will get read out
 		// 				Separated from `text` so it can be styled if so desired
 		// textInput: Temporary text field for generating `text`. Will be componentised.
-
-		// self.update();
-
-		// self.updateScriptButton = document.getElementById(SELECTORS.updateScriptButton);
-		// self.updateScriptButton.addEventListener('click', self.update.bind(this));
 	}
 
 	// Runs the first time Audio Update runs in the browser
@@ -4542,69 +4530,79 @@ var AudioUpdate = function () {
 				modules: [{ type: 'text', text: 'Good morning Daniel.' }, { type: 'date', text: 'Today is {dddd} {MMM} {Do}' }]
 			};
 			this.data = defaultProps;
-			this.buildModules();
-			this.save();
-			return defaultProps;
+			this.saveToStorage();
 		}
 
 		// constructs modules on load
 
 	}, {
-		key: 'buildModules',
-		value: function buildModules() {
-			console.log('AudioUpdate.buildModules()');
+		key: 'buildModulesFromData',
+		value: function buildModulesFromData() {
+			console.log('AudioUpdate.buildModulesFromData()');
 			var self = this;
 			this.modules = this.data.modules.map(function (moduleData) {
 				var module = new AudioUpdateModule(moduleData);
-				self.modulesContainer.appendChild(module.render());
 				return module;
 			});
 		}
 
-		// returns an Array of AudioUpdateModules, with updated data from the DOM
+		// 
 
 	}, {
-		key: 'getAllModules',
-		value: function getAllModules() {
-			console.log('AudioUpdate.getAllModules()');
+		key: 'renderModules',
+		value: function renderModules() {
+			console.log('AudioUpdate.renderModules()');
+			var self = this;
+			var _iteratorNormalCompletion = true;
+			var _didIteratorError = false;
+			var _iteratorError = undefined;
+
+			try {
+				for (var _iterator = self.modules[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+					var module = _step.value;
+
+					self.modulesContainer.appendChild(module.render());
+				}
+			} catch (err) {
+				_didIteratorError = true;
+				_iteratorError = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion && _iterator.return) {
+						_iterator.return();
+					}
+				} finally {
+					if (_didIteratorError) {
+						throw _iteratorError;
+					}
+				}
+			}
+		}
+
+		// returns an Array of Objects, with updated data from the DOM
+
+	}, {
+		key: 'updateModules',
+		value: function updateModules() {
+			console.log('AudioUpdate.updateModules()');
 			// loop through modules in DOM and extract type & text
 			var modules = this.modulesContainer.getElementsByClassName('module');
-			var modulesData = Array.prototype.map.call(modules, function (module) {
-				// This map should create AudioUpdateModules?
-				// Functionality below should be stored in AudioUpdateModule as getData()
-				return {
+			this.modules = Array.prototype.map.call(modules, function (module) {
+				return new AudioUpdateModule({
 					type: module.dataset.moduleType,
 					text: module.querySelectorAll('input')[0].value
-				};
+				});
 			});
-			return modulesData;
 		}
 	}, {
-		key: 'generateText',
-		value: function generateText() {
-			console.log('AudioUpdate.generateText()');
+		key: 'updateText',
+		value: function updateText() {
+			console.log('AudioUpdate.updateText()');
 			var text = this.modules.reduce(function (acc, module) {
-				console.log('acc: ', acc);
-				console.log('module: ', module.renderText());
 				return acc.renderText() + " " + module.renderText() + " ";
 			});
-			self.textPreview.innerHTML = text;
+			this.text = text;
 		}
-
-		// update() {
-		// 	console.log('AudioUpdate.update()');
-		// 	this.text = "";
-		// 	this.modulesContainer.innerHTML = '';
-		// 	for(var key in this.modulesData) {
-		// 		var module = new AudioUpdateModule(this.modulesData[key]);
-		// 		this.text += module.text + ' ';
-		// 		this.modules.push(module);
-		// 		this.modulesContainer.appendChild(module.render());
-
-		// 	}
-		// 	this.updateTextPreview();
-		// }
-
 	}, {
 		key: 'updateTextPreview',
 		value: function updateTextPreview() {
@@ -4612,28 +4610,44 @@ var AudioUpdate = function () {
 			this.textPreview.innerHTML = this.text;
 		}
 	}, {
-		key: 'save',
-		value: function save() {
-			console.log('AudioUpdate.save()');
+		key: 'updateData',
+		value: function updateData() {
+			console.log('AudioUpdate.updateData()');
 			var data = {};
-			data.modules = this.getAllModules();
+			data.modules = this.modules.map(function (module) {
+				return module.getData();
+			});
 			this.data = data;
+		}
+	}, {
+		key: 'saveChanges',
+		value: function saveChanges() {
+			console.log('AudioUpdate.saveChanges()');
+			this.updateModules();
+			this.updateData();
+			this.saveToStorage();
+			this.updateText();
+			this.updateTextPreview();
+		}
+	}, {
+		key: 'saveToStorage',
+		value: function saveToStorage() {
+			console.log('AudioUpdate.saveToStorage()');
+			var self = this;
 			if (typeof Storage !== "undefined") {
 				// Code for localStorage/sessionStorage.
-				localStorage.setItem('audio-update', JSON.stringify(data));
-				this.generateText();
+				localStorage.setItem('audio-update', JSON.stringify(self.data));
 			} else {
 				// Sorry! No Web Storage support..
 				alert('Sorry, your browser doesn\'t support Local Storage. Please upgrade to a newer browser.');
 			}
 		}
 	}, {
-		key: 'load',
-		value: function load() {
+		key: 'loadFromStorage',
+		value: function loadFromStorage() {
 			console.log('AudioUpdate.load()');
 			if (typeof Storage !== "undefined") {
 				var data = JSON.parse(localStorage.getItem('audio-update'));
-				// console.log('data: ', data);
 				return data;
 			} else {
 				alert('Sorry, your browser doesn\'t support Local Storage. Please upgrade to a newer browser.');
@@ -4641,8 +4655,8 @@ var AudioUpdate = function () {
 			return;
 		}
 	}, {
-		key: 'delete',
-		value: function _delete() {
+		key: 'deleteFromStorage',
+		value: function deleteFromStorage() {
 			console.log('AudioUpdate.delete()');
 			if (typeof Storage !== "undefined") {
 				localStorage.removeItem('audio-update');
@@ -4745,6 +4759,7 @@ var AudioUpdateModule = function () {
             // map to word replacement with date if in {}
             var updatedTextArray = textArray.map(function (text) {
                 // if word bookended by {}
+                // TODO: ignore punctuation
                 if (text.charAt(0) === '{' && text.charAt(text.length - 1) === '}') {
                     // replace contents with moment format
                     var dateFormat = utils.strStripEnds(text);
