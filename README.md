@@ -1,6 +1,14 @@
 # audio-update
 A tool to deliver an automated, customisable audio update. Combine and craft news, weather, time & date, and more to create the audio update that's right for you. Wake up in the morning
 
+## Getting Started
+```
+npm install
+npm install -g browserify watchify
+npm run watch
+```
+
+Open index.html in a browser and you're ready to go!
 
 ## Goal
 In the morning, be woken up by the morning update. The audio script is a customizable set of modules that have audio output, such as the weather, news updates, music, or custom text. Each day, a program generates new text-based content (latest news, calendar events & meetings) sent to a TTS service and automatically generates a new audio file.
