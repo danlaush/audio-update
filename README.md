@@ -27,8 +27,8 @@ In the morning, be woken up by the morning update. The audio script is a customi
 Text To Speech (TTS)
 
 * Option 1: JS TTS lib https://responsivevoice.org/ - Easy to use (I know js) but doesn't generate a file, uses web browser media api to play directly. Would have to use a headless browser on a server to generate the file by playing the text and recording it in real time. Takes too long.
-* Option 2: Something Google TTS? Would have to break into several small TTS snippets and combine.
-* Option 3: Something in Android that can do this? Java D:
+* ~~Option 2: Something Google TTS? Would have to break into several small TTS snippets and combine.~~
+* ~~Option 3: Something in Android that can do this? Java D:~~
 
 Playing media
 

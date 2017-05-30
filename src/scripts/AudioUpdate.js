@@ -107,7 +107,7 @@ class AudioUpdate {
 			console.log('module: ', module.renderText());
 			return acc.renderText() + " " + module.renderText() + " ";
 		});
-		self.textPreview.innerHTML = text;
+		this.text = self.textPreview.innerHTML = text;
 	}
 
 	// update() {
@@ -131,13 +131,14 @@ class AudioUpdate {
 
 	save() {
 		console.log('AudioUpdate.save()');
+		var self = this;
 		var data = {};
 		data.modules = this.getAllModules();
 		this.data = data;
 		if (typeof(Storage) !== "undefined") {
 			// Code for localStorage/sessionStorage.
 			localStorage.setItem('audio-update', JSON.stringify(data));
-			this.generateText();
+			self.generateText();
 		} else {
 			// Sorry! No Web Storage support..
 			alert('Sorry, your browser doesn\'t support Local Storage. Please upgrade to a newer browser.');
