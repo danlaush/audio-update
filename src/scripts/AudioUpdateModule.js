@@ -62,6 +62,7 @@ class AudioUpdateModule {
         // map to word replacement with date if in {}
         var updatedTextArray = textArray.map(function(text) {
             // if word bookended by {}
+            // TODO: ignore punctuation
             if(text.charAt(0) === '{' && text.charAt(text.length-1) === '}') {
                 // replace contents with moment format
                 var dateFormat = utils.strStripEnds(text);

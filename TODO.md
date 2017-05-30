@@ -17,5 +17,13 @@ These are not in order. And probably don't make much sense.
 - [x] Get save/load with localStorage working
 - [x] Transpile ES6 so it can require and arrow function and class and all that
 - [x] Migrate original code to classes/modules
-- [ ] App should pause until ResponsiveVoice has been loaded
+- [ ] App should wait to play if ResponsiveVoice has not been loaded
 - [ ] BUG: AudioUpdateModule: Date module: filter out punctionation ({dddd}, should be passing test)
+- [ ] Allow user to add new AudioUpdateModules
+- [x] Change save() to save text to AudioUpdate instead of directly updating textPreview
+- [ ] Allow user to drag and drop modules to set order
+- [ ] Allow user to select voice type from a dropdown ([voice list available here](https://responsivevoice.org/))
+- [ ] Make it not look like shit
+- [ ] Add flag to autoplay
+- [ ] Add versioning system to invalidate/transform old save data if structure changes
+- [x] BUG: Save button doesn't trigger update of textPreview
