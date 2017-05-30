@@ -4471,10 +4471,12 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var AudioUpdateModule = require('./AudioUpdateModule');
+var TogglePlayButton = require('./components/TogglePlayButton');
 
 var SELECTORS = {
 	textPreview: 'textPreview',
 	modulesContainer: 'modules',
+	mediaControlsContainer: 'mediaControls',
 	textInput: 'textInput',
 	updateScriptButton: 'updateScript',
 	playButton: 'play',
@@ -4492,6 +4494,7 @@ var AudioUpdate = function () {
 
 		self.textPreview = document.getElementById(SELECTORS.textPreview);
 		self.modulesContainer = document.getElementById(SELECTORS.modulesContainer);
+		self.mediaControlsContainer = document.getElementById(SELECTORS.mediaControlsContainer);
 
 		self.playButton = document.getElementById(SELECTORS.playButton);
 		self.playButton.addEventListener('click', self.speak.bind(this));
@@ -4516,6 +4519,10 @@ var AudioUpdate = function () {
 		// textPreview: The HTML displayed to the user of the text which will get read out
 		// 				Separated from `text` so it can be styled if so desired
 		// textInput: Temporary text field for generating `text`. Will be componentised.
+
+		var togglePlay = new TogglePlayButton();
+		console.log('togglePlay: ', togglePlay);
+		self.mediaControlsContainer.appendChild(togglePlay.render());
 	}
 
 	// Runs the first time Audio Update runs in the browser
@@ -4527,7 +4534,7 @@ var AudioUpdate = function () {
 		value: function init() {
 			console.log('AudioUpdate.init()');
 			var defaultProps = {
-				modules: [{ type: 'text', text: 'Good morning Daniel.' }, { type: 'date', text: 'Today is {dddd} {MMM} {Do}' }]
+				modules: [{ type: 'text', text: 'Good morning Daniel.' }, { type: 'date', text: 'Today is {dddd} {MMM} {Do}' }, { type: 'weather', text: 'BOM says it will rain this afternoon, with a high of 18 degrees. Remember to bring an umbrella.' }, { type: 'news', text: 'Here are a selection of headlines from the BBC. Trump unveils new plan to fight inflation. Syria crisis worsening, says UNHCR.' }, { type: 'calendar', text: 'Remember you have an early appointment today - Coffee with Ben at 8:15 AM.' }]
 			};
 			this.data = defaultProps;
 			this.saveToStorage();
@@ -4590,7 +4597,7 @@ var AudioUpdate = function () {
 			this.modules = Array.prototype.map.call(modules, function (module) {
 				return new AudioUpdateModule({
 					type: module.dataset.moduleType,
-					text: module.querySelectorAll('input')[0].value
+					text: module.querySelectorAll('textarea')[0].value
 				});
 			});
 		}
@@ -4599,7 +4606,9 @@ var AudioUpdate = function () {
 		value: function updateText() {
 			console.log('AudioUpdate.updateText()');
 			var text = this.modules.reduce(function (acc, module) {
-				return acc.renderText() + " " + module.renderText() + " ";
+				console.log('acc: ', acc);
+				console.log('module: ', module);
+				return acc + " " + module.renderText() + " ";
 			});
 			this.text = text;
 		}
@@ -4683,7 +4692,7 @@ var AudioUpdate = function () {
 
 module.exports = AudioUpdate;
 
-},{"./AudioUpdateModule":3}],3:[function(require,module,exports){
+},{"./AudioUpdateModule":3,"./components/TogglePlayButton":4}],3:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -4725,7 +4734,7 @@ var AudioUpdateModule = function () {
             var labelText = document.createTextNode(utils.strUcFirst(this.type));
             // label.htmlFor = key;
             label.appendChild(labelText);
-            var el = document.createElement('input');
+            var el = document.createElement('textarea');
             // el.id = key;
             el.value = this.text;
             label.appendChild(el);
@@ -4795,7 +4804,73 @@ var AudioUpdateModule = function () {
 
 module.exports = AudioUpdateModule;
 
-},{"./lib/utils":5,"moment":1}],4:[function(require,module,exports){
+},{"./lib/utils":6,"moment":1}],4:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// var AudioUpdateModule = require('./AudioUpdateModule');
+
+var SELECTORS = {
+	togglePlay: 'togglePlay'
+};
+
+// Toggle Play Button is a <button> that controls the 
+// global Responsive Voice media playback
+
+var TogglePlayButton = function () {
+	function TogglePlayButton() {
+		_classCallCheck(this, TogglePlayButton);
+
+		console.log('TogglePlayButton.constructor()');
+
+		this.play = true;
+		this.dirty = false;
+	}
+
+	_createClass(TogglePlayButton, [{
+		key: 'togglePlay',
+		value: function togglePlay() {
+			console.log('TogglePlayButton.togglePlay()');
+			// if(!this.dirty) {
+			// 	console.log('first play');
+			// 	responsiveVoice.speak()
+			// }
+			var self = this;
+			self.play = !self.play;
+			self.TogglePlayButton.innerHTML = '';
+			if (self.play) {
+				// currently playing
+				responsiveVoice.pause();
+				console.log('pause');
+				self.TogglePlayButton.appendChild(document.createTextNode('Click to Play'));
+			} else {
+				// currently paused
+				responsiveVoice.resume();
+				console.log('play');
+				self.TogglePlayButton.appendChild(document.createTextNode('Click to Pause'));
+			}
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var self = this;
+			self.TogglePlayButton = document.createElement('button');
+			self.TogglePlayButton.classList = "button button--toggle-play";
+			self.TogglePlayButton.appendChild(document.createTextNode('Click to Pause'));
+			self.TogglePlayButton.addEventListener('click', self.togglePlay.bind(this));
+			return self.TogglePlayButton;
+		}
+	}]);
+
+	return TogglePlayButton;
+}();
+
+module.exports = TogglePlayButton;
+
+},{}],5:[function(require,module,exports){
 'use strict';
 
 var AudioUpdate = require('./AudioUpdate');
@@ -4928,7 +5003,7 @@ var myUpdate = new AudioUpdate();
 
 // // newUpdate.speak();
 
-},{"./AudioUpdate":2}],5:[function(require,module,exports){
+},{"./AudioUpdate":2}],6:[function(require,module,exports){
 "use strict";
 
 // Capitalises the first letter of a string
@@ -4945,4 +5020,4 @@ module.exports = {
 	strStripEnds: strStripEnds
 };
 
-},{}]},{},[4]);
+},{}]},{},[5]);

@@ -31,7 +31,7 @@ class AudioUpdateModule {
         var labelText = document.createTextNode(utils.strUcFirst(this.type));
         // label.htmlFor = key;
         label.appendChild(labelText);
-        var el = document.createElement('input');
+        var el = document.createElement('textarea');
         // el.id = key;
         el.value = this.text;
         label.appendChild(el);

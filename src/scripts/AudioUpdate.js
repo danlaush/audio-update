@@ -1,14 +1,16 @@
 var AudioUpdateModule = require('./AudioUpdateModule');
+var TogglePlayButton = require('./components/TogglePlayButton');
 
 const SELECTORS = {
 	textPreview: 'textPreview',
 	modulesContainer: 'modules',
+	mediaControlsContainer: 'mediaControls',
 	textInput: 'textInput',
 	updateScriptButton: 'updateScript',
 	playButton: 'play',
 	saveButton: 'save',
 	loadButton: 'load',
-	deleteButton: 'delete'
+	deleteButton: 'delete',
 }
 
 class AudioUpdate {
@@ -18,6 +20,7 @@ class AudioUpdate {
 
 		self.textPreview = document.getElementById(SELECTORS.textPreview);
 		self.modulesContainer = document.getElementById(SELECTORS.modulesContainer);
+		self.mediaControlsContainer = document.getElementById(SELECTORS.mediaControlsContainer);
 
 		self.playButton = document.getElementById(SELECTORS.playButton);
 		self.playButton.addEventListener('click', self.speak.bind(this));
@@ -44,6 +47,9 @@ class AudioUpdate {
 		// 				Separated from `text` so it can be styled if so desired
 		// textInput: Temporary text field for generating `text`. Will be componentised.
 		
+		var togglePlay = new TogglePlayButton();
+		console.log('togglePlay: ', togglePlay);
+		self.mediaControlsContainer.appendChild(togglePlay.render());
 	}
 
 	// Runs the first time Audio Update runs in the browser
@@ -53,7 +59,10 @@ class AudioUpdate {
 		var defaultProps = {
 			modules: [
 				{type: 'text', text: 'Good morning Daniel.'},
-				{type: 'date', text: 'Today is {dddd} {MMM} {Do}'}
+				{type: 'date', text: 'Today is {dddd} {MMM} {Do}'},
+				{type: 'weather', text: 'BOM says it will rain this afternoon, with a high of 18 degrees. Remember to bring an umbrella.'},
+				{type: 'news', text: 'Here are a selection of headlines from the BBC. Trump unveils new plan to fight inflation. Syria crisis worsening, says UNHCR.'},
+				{type: 'calendar', text: 'Remember you have an early appointment today - Coffee with Ben at 8:15 AM.'}
 			]
 		}
 		this.data = defaultProps;
@@ -87,7 +96,7 @@ class AudioUpdate {
 		this.modules = Array.prototype.map.call(modules, function(module) {
 			return new AudioUpdateModule({
 				type: module.dataset.moduleType,
-				text: module.querySelectorAll('input')[0].value
+				text: module.querySelectorAll('textarea')[0].value
 			});
 		});
 	}
@@ -95,7 +104,9 @@ class AudioUpdate {
 	updateText() {
 		console.log('AudioUpdate.updateText()');
 		var text = this.modules.reduce(function(acc, module) {
-			return acc.renderText() + " " + module.renderText() + " ";
+			console.log('acc: ', acc);
+			console.log('module: ', module);
+			return acc + " " + module.renderText() + " ";
 		});
 		this.text = text;
 	}

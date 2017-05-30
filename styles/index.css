@@ -19,11 +19,18 @@ body {
 	margin-bottom: 20px;
 }
 
-.module label, .module input {
+.module label, .module textarea {
 	display: inline-block;
+	width: 100%;
 	padding: 10px;
 }
 
-.module input {
-	margin-left: 20px;
+.module label {
+	width: 30vw;
+}
+
+.module textarea {
+	width: 70vw;
+	vertical-align: middle;
+	/*margin-left: 20px;*/
 }
