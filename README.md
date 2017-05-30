@@ -1,5 +1,5 @@
 # audio-update
-A tool to deliver an automated, customisable audio update. Combine and craft news, weather, time & date, and more to create the audio update that's right for you. Wake up in the morning
+A tool to deliver an automated, customisable audio update. Combine and craft news, weather, time & date, and more to create the audio update that's right for you. [View the project](https://danlaush.github.io/audio-update)
 
 ## Getting Started
 ```
