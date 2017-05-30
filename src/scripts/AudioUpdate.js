@@ -25,9 +25,6 @@ class AudioUpdate {
 		self.saveButton = document.getElementById(SELECTORS.saveButton);
 		self.saveButton.addEventListener('click', self.saveChanges.bind(this));
 
-		self.loadButton = document.getElementById(SELECTORS.loadButton);
-		self.loadButton.addEventListener('click', self.loadFromStorage.bind(this));
-
 		self.deleteButton = document.getElementById(SELECTORS.deleteButton);
 		self.deleteButton.addEventListener('click', self.deleteFromStorage.bind(this));
 
@@ -47,10 +44,6 @@ class AudioUpdate {
 		// 				Separated from `text` so it can be styled if so desired
 		// textInput: Temporary text field for generating `text`. Will be componentised.
 		
-		// self.update();
-
-		// self.updateScriptButton = document.getElementById(SELECTORS.updateScriptButton);
-		// self.updateScriptButton.addEventListener('click', self.update.bind(this));
 	}
 
 	// Runs the first time Audio Update runs in the browser
@@ -77,7 +70,7 @@ class AudioUpdate {
 		});
 	}
 
-	// loop through 
+	// 
 	renderModules() {
 		console.log('AudioUpdate.renderModules()');
 		var self = this;
@@ -92,8 +85,6 @@ class AudioUpdate {
 		// loop through modules in DOM and extract type & text
 		var modules = this.modulesContainer.getElementsByClassName('module');
 		this.modules = Array.prototype.map.call(modules, function(module) {
-			// This map should create AudioUpdateModules?
-			// Functionality below should be stored in AudioUpdateModule as getData()
 			return new AudioUpdateModule({
 				type: module.dataset.moduleType,
 				text: module.querySelectorAll('input')[0].value
