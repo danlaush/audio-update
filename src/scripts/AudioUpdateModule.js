@@ -22,6 +22,13 @@ class AudioUpdateModule {
 
     }
 
+    getData() {
+        return {
+            type: this.type,
+            text: this.text
+        }
+    }
+
     render() {
         console.log('AudioUpdateModule.render()');
         var container = document.createElement('div');
@@ -54,7 +61,7 @@ class AudioUpdateModule {
 
     renderDate(text) {
         console.log('AudioUpdateModule.renderDate()');
-        // scan text as nodes, find {%d} {%MM} etc
+        // scan text word by word, find {%d} {%MM} etc
         // replace {} variables with data
 
         // split string
@@ -76,18 +83,6 @@ class AudioUpdateModule {
         // var current = moment().format('dddd, MMMM Do');
         // text += ' ' + current;
         return updatedText;
-    }
-
-    getData() {
-        return {
-            type: this.type,
-            text: this.text
-        }
-    }
-
-    myPrint() {
-        console.log('AudioUpdateModule.myPrint()');
-        return this.text;
     }
 }
 

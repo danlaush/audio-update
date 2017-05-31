@@ -8,14 +8,20 @@ const SELECTORS = {
 	textInput: 'textInput',
 	updateScriptButton: 'updateScript',
 	playButton: 'play',
+	stopButton: 'stop',
 	saveButton: 'save',
 	loadButton: 'load',
 	deleteButton: 'delete',
+	addModuleButton: 'addModule'
 }
 
 class AudioUpdate {
 	constructor() {
 		console.log('AudioUpdate.constructor()');
+		// This uses some similar terms for similar items.
+		// text: The string stored in AudioUpdate which gets read out
+		// textPreview: The HTML displayed to the user of the text which will get read out
+		// 				Separated from `text` so it can be styled if so desired
 		var self = this;
 
 		self.textPreview = document.getElementById(SELECTORS.textPreview);
@@ -25,11 +31,17 @@ class AudioUpdate {
 		self.playButton = document.getElementById(SELECTORS.playButton);
 		self.playButton.addEventListener('click', self.speak.bind(this));
 
+		self.stopButton = document.getElementById(SELECTORS.stopButton);
+		self.stopButton.addEventListener('click', self.stopSpeaking.bind(this));
+
 		self.saveButton = document.getElementById(SELECTORS.saveButton);
 		self.saveButton.addEventListener('click', self.saveChanges.bind(this));
 
 		self.deleteButton = document.getElementById(SELECTORS.deleteButton);
 		self.deleteButton.addEventListener('click', self.deleteFromStorage.bind(this));
+
+		self.addModuleButton = document.getElementById(SELECTORS.addModuleButton);
+		self.addModuleButton.addEventListener('click', self.addModule.bind(this));
 
 		
 		self.data = this.loadFromStorage();
@@ -41,13 +53,15 @@ class AudioUpdate {
 		self.renderModules();
 		self.updateText();
 		self.updateTextPreview();
-		// This uses several similar terms for similar items.
-		// text: The string stored in AudioUpdate which gets read out
-		// textPreview: The HTML displayed to the user of the text which will get read out
-		// 				Separated from `text` so it can be styled if so desired
-		// textInput: Temporary text field for generating `text`. Will be componentised.
+
+		// Stop voices when leaving/reloading the page
+		window.addEventListener("unload", function(e){
+			responsiveVoice.cancel();
+		}, false);
 		
-		var togglePlay = new TogglePlayButton();
+		var togglePlay = new TogglePlayButton({
+			playCallback: this.speak
+		});
 		console.log('togglePlay: ', togglePlay);
 		self.mediaControlsContainer.appendChild(togglePlay.render());
 	}
@@ -59,7 +73,7 @@ class AudioUpdate {
 		var defaultProps = {
 			modules: [
 				{type: 'text', text: 'Good morning Daniel.'},
-				{type: 'date', text: 'Today is {dddd} {MMM} {Do}'},
+				{type: 'date', text: 'Today is {dddd} {MMM} {Do} .'},
 				{type: 'weather', text: 'BOM says it will rain this afternoon, with a high of 18 degrees. Remember to bring an umbrella.'},
 				{type: 'news', text: 'Here are a selection of headlines from the BBC. Trump unveils new plan to fight inflation. Syria crisis worsening, says UNHCR.'},
 				{type: 'calendar', text: 'Remember you have an early appointment today - Coffee with Ben at 8:15 AM.'}
@@ -88,7 +102,8 @@ class AudioUpdate {
 		}
 	}
 
-	// returns an Array of Objects, with updated data from the DOM
+	// replaces this.modules with an Array of Objects using data from the DOM
+	// TODO: actually update existing modules instead of dump & replace
 	updateModules() {
 		console.log('AudioUpdate.updateModules()');
 		// loop through modules in DOM and extract type & text
@@ -101,13 +116,20 @@ class AudioUpdate {
 		});
 	}
 
+	addModule() {
+		console.log('AudioUpdate.addModule()');
+		var newModule = new AudioUpdateModule();
+		this.modulesContainer.appendChild(newModule.render());
+	}
+
 	updateText() {
 		console.log('AudioUpdate.updateText()');
-		var text = this.modules.reduce(function(acc, module) {
-			console.log('acc: ', acc);
-			console.log('module: ', module);
-			return acc + " " + module.renderText() + " ";
-		});
+		var text = '';
+		// tried to use Array reduce but had problems with the accumulator & objects
+		// broken: return acc.renderText() + " " + module.renderText() + " ";
+		for(var index in this.modules) {
+			text += this.modules[index].renderText() + ' ';
+		}
 		this.text = text;
 	}
 
@@ -119,6 +141,7 @@ class AudioUpdate {
 	updateData() {
 		console.log('AudioUpdate.updateData()');
 		var data = {};
+		// TODO store voice
 		data.modules = this.modules.map(function(module) {
 			return module.getData();
 		});
@@ -171,9 +194,9 @@ class AudioUpdate {
 		responsiveVoice.speak(this.text, this.voice);
 	}
 
-	myPrint() {
-		console.log('AudioUpdate.myPrint()');
-		return this.text;
+	stopSpeaking() {
+		console.log('AudioUpdate.stopSpeaking()');
+		responsiveVoice.cancel();
 	}
 }
 
