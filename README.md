@@ -36,6 +36,11 @@ Arrows to/from data simply mean whether data is being get or set. Arrows in are 
 
 ![Structure diagram of the app](docs/structure-diagram-170601.png)
 
+Missing from diagram (as new features are added):
+
+- AudioModule.renderDate() + moment
+- TogglePlayButton
+
 ## Process
 
 * User navigates to website
