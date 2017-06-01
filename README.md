@@ -26,6 +26,10 @@ TODO Build:
 * Set up browser sync for local host
 * Sass at some point
 
+## Structure Diagram
+
+[Structure diagram of the app](docs/structure-diagram-170512.png)
+
 ## Process
 
 * User navigates to website
