@@ -28,7 +28,18 @@ TODO Build:
 
 ## Structure Diagram
 
-[Structure diagram of the app](docs/structure-diagram-170512.png)
+This diagram attempts to lay out how the Audio Update app is structured. It shows the data needed to operate the program, the functions used to add, update, and delete that data, and the classes used to organise those functions. 
+
+The arrows indicate the direction of the program's flow. One-way arrows from Entity A to Entity B mean A is calling B. Two-way arrows means B returns data to A.
+
+Arrows to/from data simply mean whether data is being get or set. Arrows in are an update to the data, arrow out means the data is being accessed by that function.
+
+![Structure diagram of the app](docs/structure-diagram-170601.png)
+
+Missing from diagram (as new features are added):
+
+- AudioModule.renderDate() + moment
+- TogglePlayButton
 
 ## Process
 
