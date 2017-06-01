@@ -4532,6 +4532,8 @@ var AudioUpdate = function () {
 			responsiveVoice.cancel();
 		}, false);
 
+		// How can I create a TogglePlayButton and attach it to an existing 
+		// DOM element, instead of having to document.createElement()?
 		var togglePlay = new TogglePlayButton({
 			playCallback: this.speak
 		});
@@ -4628,7 +4630,8 @@ var AudioUpdate = function () {
 		value: function updateText() {
 			console.log('AudioUpdate.updateText()');
 			var text = '';
-			// tried to use Array reduce but had problems with the accumulator & objects
+			// tried to use Array reduce but had problems 
+			// with the accumulator & mixing strings/objects
 			// broken: return acc.renderText() + " " + module.renderText() + " ";
 			for (var index in this.modules) {
 				text += this.modules[index].renderText() + ' ';
