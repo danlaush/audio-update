@@ -4502,9 +4502,6 @@ var AudioUpdate = function () {
 		self.modulesContainer = document.getElementById(SELECTORS.modulesContainer);
 		self.mediaControlsContainer = document.getElementById(SELECTORS.mediaControlsContainer);
 
-		self.playButton = document.getElementById(SELECTORS.playButton);
-		self.playButton.addEventListener('click', self.speak.bind(this));
-
 		self.stopButton = document.getElementById(SELECTORS.stopButton);
 		self.stopButton.addEventListener('click', self.stopSpeaking.bind(this));
 
@@ -4535,9 +4532,8 @@ var AudioUpdate = function () {
 		// How can I create a TogglePlayButton and attach it to an existing 
 		// DOM element, instead of having to document.createElement()?
 		var togglePlay = new TogglePlayButton({
-			playCallback: this.speak
+			audioUpdate: self
 		});
-		console.log('togglePlay: ', togglePlay);
 		self.mediaControlsContainer.appendChild(togglePlay.render());
 	}
 
@@ -4624,6 +4620,16 @@ var AudioUpdate = function () {
 			console.log('AudioUpdate.addModule()');
 			var newModule = new AudioUpdateModule();
 			this.modulesContainer.appendChild(newModule.render());
+		}
+	}, {
+		key: 'getText',
+		value: function getText() {
+			return this.text;
+		}
+	}, {
+		key: 'getVoice',
+		value: function getVoice() {
+			return this.voice;
 		}
 	}, {
 		key: 'updateText',
@@ -4741,18 +4747,12 @@ var AudioUpdateModule = function () {
 
         this.type = typeof props.type !== 'undefined' ? props.type : 'text';
         this.text = typeof props.text !== 'undefined' ? props.text : 'Good morning';
-
-        // this.init();
     }
 
     _createClass(AudioUpdateModule, [{
-        key: 'init',
-        value: function init() {
-            console.log('AudioUpdateModule.init()');
-        }
-    }, {
         key: 'getData',
         value: function getData() {
+            console.log('AudioUpdateModule.getData()');
             return {
                 type: this.type,
                 text: this.text
@@ -4761,20 +4761,26 @@ var AudioUpdateModule = function () {
     }, {
         key: 'render',
         value: function render() {
+            var self = this;
             console.log('AudioUpdateModule.render()');
             var container = document.createElement('div');
             container.className = 'module';
-            container.dataset.moduleType = this.type;
+            container.dataset.moduleType = self.type;
             var label = document.createElement('label');
-            var labelText = document.createTextNode(utils.strUcFirst(this.type));
+            var labelText = document.createTextNode(utils.strUcFirst(self.type));
             // label.htmlFor = key;
             label.appendChild(labelText);
             var el = document.createElement('textarea');
             // el.id = key;
-            el.value = this.text;
+            el.value = self.text;
             label.appendChild(el);
             container.appendChild(label);
+            var deleteButton = document.createElement('button');
+            deleteButton.innerHTML = "Delete";
+            deleteButton.addEventListener('click', self.deleteSelf.bind(this));
+            container.appendChild(deleteButton);
 
+            self.domElement = container;
             return container;
         }
     }, {
@@ -4818,6 +4824,13 @@ var AudioUpdateModule = function () {
             // text += ' ' + current;
             return updatedText;
         }
+    }, {
+        key: 'deleteSelf',
+        value: function deleteSelf() {
+            console.log('AudioUpdateModule.deleteSelf()');
+            console.log(this);
+            delete this.domElement;
+        }
     }]);
 
     return AudioUpdateModule;
@@ -4832,10 +4845,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-// var AudioUpdateModule = require('./AudioUpdateModule');
+// var AudioUpdate = require('./AudioUpdateModule');
 
 var SELECTORS = {
-	togglePlay: 'togglePlay'
+	togglePlay: 'togglePlay',
+	playTest: 'playTest'
 };
 
 // Toggle Play Button is a <button> that controls the 
@@ -4846,32 +4860,92 @@ var TogglePlayButton = function () {
 		_classCallCheck(this, TogglePlayButton);
 
 		console.log('TogglePlayButton.constructor()');
-
+		var self = this;
 		if (typeof props === 'undefined') props = {};
-		this.playCallback = typeof props.playCallback !== 'undefined' ? props.playCallback : 'text';
 
-		this.play = true;
-		this.dirty = false;
+		if (typeof props.audioUpdate === 'undefined') {
+			return new Error("props.audioUpdate not defined");
+		}
+		self.playTestButton = document.getElementById(SELECTORS.playTest);
+		self.playTestButton.addEventListener('click', self.playTest.bind(this));
+
+		self.audioUpdate = props.audioUpdate;
+		self.isPlaying = false;
+		self.isClean = true;
+		self.text = 'Play';
 	}
 
 	_createClass(TogglePlayButton, [{
 		key: 'togglePlay',
 		value: function togglePlay() {
 			console.log('TogglePlayButton.togglePlay()');
-			var self = this;
-			self.TogglePlayButton.innerHTML = '';
-			if (self.play) {
-				// currently playing
+			if (this.isClean) {
+				this.firstPlay();
+				return;
+			}
+			this.innerHTML = '';
+			if (this.isPlaying) {
 				responsiveVoice.pause();
-				console.log('currently playing, will now pause');
-				self.TogglePlayButton.appendChild(document.createTextNode('Click to Play'));
 			} else {
 				// currently paused
 				responsiveVoice.resume();
-				console.log('currently paused, will now play');
-				self.TogglePlayButton.appendChild(document.createTextNode('Click to Pause'));
 			}
-			self.play = !self.play;
+			this.setText();
+			this.renderText();
+			this.isPlaying = !this.isPlaying;
+		}
+	}, {
+		key: 'firstPlay',
+		value: function firstPlay() {
+			console.log('TogglePlayButton.firstPlay()');
+			this.setText();
+			this.renderText();
+			responsiveVoice.speak(this.audioUpdate.getText(), this.audioUpdate.getVoice(), {
+				onend: this.resetPlay()
+			});
+			this.isClean = false;
+			this.isPlaying = true;
+		}
+	}, {
+		key: 'playTest',
+		value: function playTest() {
+			console.log('TogglePlayButton.playTest()');
+			var self = this;
+			responsiveVoice.speak('Play a test script', self.audioUpdate.getVoice(), {
+				onstart: self.prePlay,
+				onend: self.resetPlay
+			});
+		}
+	}, {
+		key: 'prePlay',
+		value: function prePlay() {
+			console.log('TogglePlayButton.prePlay()');
+		}
+	}, {
+		key: 'resetPlay',
+		value: function resetPlay() {
+			console.log('TogglePlayButton.resetPlay()');
+			this.setText();
+			this.renderText();
+			this.isClean = true;
+			this.isPlaying = false;
+		}
+	}, {
+		key: 'setText',
+		value: function setText() {
+			console.log('TogglePlayButton.setText()');
+			if (this.isPlaying === false) {
+				this.text = 'Pause';
+			} else {
+				// isPaused
+				this.text = 'Play';
+			}
+		}
+	}, {
+		key: 'renderText',
+		value: function renderText() {
+			console.log('TogglePlayButton.renderText()');
+			this.TogglePlayButton.innerHTML = this.text;
 		}
 	}, {
 		key: 'render',
@@ -4879,7 +4953,7 @@ var TogglePlayButton = function () {
 			var self = this;
 			self.TogglePlayButton = document.createElement('button');
 			self.TogglePlayButton.classList = "button button--toggle-play";
-			self.TogglePlayButton.appendChild(document.createTextNode('Click to Pause'));
+			self.TogglePlayButton.innerHTML = this.text;
 			self.TogglePlayButton.addEventListener('click', self.togglePlay.bind(this));
 			return self.TogglePlayButton;
 		}

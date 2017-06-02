@@ -28,9 +28,6 @@ class AudioUpdate {
 		self.modulesContainer = document.getElementById(SELECTORS.modulesContainer);
 		self.mediaControlsContainer = document.getElementById(SELECTORS.mediaControlsContainer);
 
-		self.playButton = document.getElementById(SELECTORS.playButton);
-		self.playButton.addEventListener('click', self.speak.bind(this));
-
 		self.stopButton = document.getElementById(SELECTORS.stopButton);
 		self.stopButton.addEventListener('click', self.stopSpeaking.bind(this));
 
@@ -63,9 +60,8 @@ class AudioUpdate {
 		// How can I create a TogglePlayButton and attach it to an existing 
 		// DOM element, instead of having to document.createElement()?
 		var togglePlay = new TogglePlayButton({
-			playCallback: this.speak
+			audioUpdate: self
 		});
-		console.log('togglePlay: ', togglePlay);
 		self.mediaControlsContainer.appendChild(togglePlay.render());
 	}
 
@@ -123,6 +119,14 @@ class AudioUpdate {
 		console.log('AudioUpdate.addModule()');
 		var newModule = new AudioUpdateModule();
 		this.modulesContainer.appendChild(newModule.render());
+	}
+
+	getText() {
+		return this.text;
+	}
+
+	getVoice() {
+		return this.voice; 
 	}
 
 	updateText() {

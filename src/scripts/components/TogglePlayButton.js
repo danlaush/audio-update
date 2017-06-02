@@ -1,7 +1,8 @@
-// var AudioUpdateModule = require('./AudioUpdateModule');
+// var AudioUpdate = require('./AudioUpdateModule');
 
 const SELECTORS = {
-	togglePlay: 'togglePlay'
+	togglePlay: 'togglePlay',
+	playTest: 'playTest'
 }
 
 // Toggle Play Button is a <button> that controls the 
@@ -9,35 +10,97 @@ const SELECTORS = {
 class TogglePlayButton {
 	constructor(props) {
 		console.log('TogglePlayButton.constructor()');
-
+		var self = this;
         if(typeof props === 'undefined') props = {};
-        this.playCallback = (typeof props.playCallback !== 'undefined') ? props.playCallback : 'text';
 
-		this.play = true;
-		this.dirty = false;
+
+		if(typeof props.audioUpdate === 'undefined') {
+			return new Error("props.audioUpdate not defined");
+		}
+		self.playTestButton = document.getElementById(SELECTORS.playTest);
+		self.playTestButton.addEventListener('click', self.playTest.bind(this));
+
+		self.audioUpdate = props.audioUpdate;
+		self.isPlaying = false;
+		self.isClean = true;
+		self.text = 'Play';
 	}
 
 	togglePlay() {
 		console.log('TogglePlayButton.togglePlay()');
-		var self = this;
-		self.TogglePlayButton.innerHTML = '';
-		if(self.play) { // currently playing
+		if(this.isClean) {
+			this.firstPlay();
+			return;
+		}
+		this.innerHTML = '';
+		if(this.isPlaying) {
 			responsiveVoice.pause()
-			console.log('currently playing, will now pause');
-			self.TogglePlayButton.appendChild(document.createTextNode('Click to Play'));
 		} else { // currently paused
 			responsiveVoice.resume()
-			console.log('currently paused, will now play');
-			self.TogglePlayButton.appendChild(document.createTextNode('Click to Pause'));
 		}
-		self.play = !self.play;
+		this.setText();
+		this.renderText();
+		this.isPlaying = !this.isPlaying;
 	}
 
+	firstPlay() {
+		console.log('TogglePlayButton.firstPlay()');
+		this.setText();
+		this.renderText();
+		responsiveVoice.speak(
+			this.audioUpdate.getText(), 
+			this.audioUpdate.getVoice(),
+			{
+				onend: this.resetPlay()
+			}
+		);
+		this.isClean = false;
+		this.isPlaying = true;
+	}
+
+	playTest() {
+		console.log('TogglePlayButton.playTest()');
+		var self = this;
+		responsiveVoice.speak('Play a test script', 
+			self.audioUpdate.getVoice(),
+			{
+				onstart: self.prePlay,
+				onend: self.resetPlay
+			}
+		);
+	}
+
+	prePlay() {
+		console.log('TogglePlayButton.prePlay()');
+	}
+
+	resetPlay() {
+		console.log('TogglePlayButton.resetPlay()');
+		this.setText();
+		this.renderText();
+		this.isClean = true;
+		this.isPlaying = false;
+	}
+
+	setText() {
+		console.log('TogglePlayButton.setText()');
+		if(this.isPlaying === false) {
+			this.text = 'Pause';
+		} else { // isPaused
+			this.text = 'Play';
+		}
+	}
+
+	renderText() {
+		console.log('TogglePlayButton.renderText()');
+		this.TogglePlayButton.innerHTML = this.text;
+	}
+ 
 	render() {
 		var self = this;
 		self.TogglePlayButton = document.createElement('button');
 		self.TogglePlayButton.classList = "button button--toggle-play";
-		self.TogglePlayButton.appendChild(document.createTextNode('Click to Pause'));
+		self.TogglePlayButton.innerHTML = this.text;
 		self.TogglePlayButton.addEventListener('click', self.togglePlay.bind(this));
 		return self.TogglePlayButton;
 	}
