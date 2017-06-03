@@ -32,3 +32,4 @@ These are not in order. And probably don't make much sense.
 - [x] BUG: ResponsiveVoice doesn't stop when browser refreshes
 - [x] ~~TogglePlayButton [extends HTMLElement](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements/Custom_Elements_with_Classes)? To add functionality directly to DOM elements, have access to more data about element~~
 - [ ] Alert user if they try to close without saving
+- [ ] Make module controls (Save, Delete, Add) a floating button like Android

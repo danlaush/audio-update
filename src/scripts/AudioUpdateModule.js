@@ -2,7 +2,8 @@ var utils = require('./lib/utils');
 var moment = require('moment');
 
 const SELECTORS = {
-    moduleClass: 'module'
+    moduleClass: 'module',
+    modulesContainer: 'modules'
 }
 
 class AudioUpdateModule {
@@ -10,13 +11,20 @@ class AudioUpdateModule {
     constructor(props) {
         if(typeof props === 'undefined') props = {};
 
+        if(typeof props.id === 'undefined') {
+            return new Error("props.id not defined");
+        }
+        this.id = props.id;
         this.type = (typeof props.type !== 'undefined') ? props.type : 'text';
         this.text = (typeof props.text !== 'undefined') ? props.text : 'Good morning';
+
+        this.modulesContainer = document.getElementById(SELECTORS.modulesContainer);    
     }
 
     getData() {
         console.log('AudioUpdateModule.getData()');
         return {
+            id: this.id,
             type: this.type,
             text: this.text
         }
@@ -28,6 +36,7 @@ class AudioUpdateModule {
         var container = document.createElement('div');
         container.className = 'module';
         container.dataset.moduleType = self.type;
+        container.id = 'module' + self.id;
         var label = document.createElement('label');
         var labelText = document.createTextNode(utils.strUcFirst(self.type));
         // label.htmlFor = key;
@@ -86,8 +95,8 @@ class AudioUpdateModule {
 
     deleteSelf() {
         console.log('AudioUpdateModule.deleteSelf()');
-        console.log(this);
-        delete this.domElement;
+        this.modulesContainer.removeChild(this.domElement);
+        // delete this.domElement;
     }
 }
 

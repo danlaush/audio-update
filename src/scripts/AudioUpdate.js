@@ -8,7 +8,7 @@ const SELECTORS = {
 	updateScriptButton: 'updateScript',
 	saveButton: 'save',
 	loadButton: 'load',
-	deleteButton: 'delete',
+	resetButton: 'reset',
 	addModuleButton: 'addModule'
 }
 
@@ -30,8 +30,8 @@ class AudioUpdate {
 		self.saveButton = document.getElementById(SELECTORS.saveButton);
 		self.saveButton.addEventListener('click', self.saveChanges.bind(this));
 
-		self.deleteButton = document.getElementById(SELECTORS.deleteButton);
-		self.deleteButton.addEventListener('click', self.deleteFromStorage.bind(this));
+		self.resetButton = document.getElementById(SELECTORS.resetButton);
+		self.resetButton.addEventListener('click', self.deleteFromStorage.bind(this));
 
 		self.addModuleButton = document.getElementById(SELECTORS.addModuleButton);
 		self.addModuleButton.addEventListener('click', self.addModule.bind(this));
@@ -76,9 +76,9 @@ class AudioUpdate {
 	buildModulesFromData() {
 		console.log('AudioUpdate.buildModulesFromData()');
 		var self = this;
-		this.modules = this.data.modules.map(function(moduleData) {
-			var module = new AudioUpdateModule(moduleData);
-			return module;
+		this.modules = this.data.modules.map(function(moduleData, index) {
+			moduleData = Object.assign(moduleData, {id: index});
+			return new AudioUpdateModule(moduleData);
 		});
 	}
 
@@ -97,8 +97,9 @@ class AudioUpdate {
 		console.log('AudioUpdate.updateModules()');
 		// loop through modules in DOM and extract type & text
 		var modules = this.modulesContainer.getElementsByClassName('module');
-		this.modules = Array.prototype.map.call(modules, function(module) {
+		this.modules = Array.prototype.map.call(modules, function(module, index) {
 			return new AudioUpdateModule({
+				id: index,
 				type: module.dataset.moduleType,
 				text: module.querySelectorAll('textarea')[0].value
 			});
@@ -107,7 +108,9 @@ class AudioUpdate {
 
 	addModule() {
 		console.log('AudioUpdate.addModule()');
-		var newModule = new AudioUpdateModule();
+		var newModule = new AudioUpdateModule({
+			id: this.modules.length
+		});
 		this.modulesContainer.appendChild(newModule.render());
 	}
 
@@ -140,7 +143,9 @@ class AudioUpdate {
 		console.log('AudioUpdate.updateData()');
 		var data = {};
 		// TODO store voice
+		console.log('this.modules', this.modules);
 		data.modules = this.modules.map(function(module) {
+			console.log(module);
 			return module.getData();
 		});
 		this.data = data;
