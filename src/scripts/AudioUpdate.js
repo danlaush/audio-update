@@ -1,10 +1,9 @@
 var AudioUpdateModule = require('./AudioUpdateModule');
-var TogglePlayButton = require('./components/TogglePlayButton');
+var VoiceControls = require('./VoiceControls');
 
 const SELECTORS = {
 	textPreview: 'textPreview',
 	modulesContainer: 'modules',
-	mediaControlsContainer: 'mediaControls',
 	textInput: 'textInput',
 	updateScriptButton: 'updateScript',
 	playButton: 'play',
@@ -25,11 +24,10 @@ class AudioUpdate {
 		var self = this;
 
 		self.textPreview = document.getElementById(SELECTORS.textPreview);
-		self.modulesContainer = document.getElementById(SELECTORS.modulesContainer);
-		self.mediaControlsContainer = document.getElementById(SELECTORS.mediaControlsContainer);
+		self.modulesContainer = document.getElementById(SELECTORS.modulesContainer);		
 
-		self.stopButton = document.getElementById(SELECTORS.stopButton);
-		self.stopButton.addEventListener('click', self.stopSpeaking.bind(this));
+		// self.stopButton = document.getElementById(SELECTORS.stopButton);
+		// self.stopButton.addEventListener('click', self.stopSpeaking.bind(this));
 
 		self.saveButton = document.getElementById(SELECTORS.saveButton);
 		self.saveButton.addEventListener('click', self.saveChanges.bind(this));
@@ -50,19 +48,13 @@ class AudioUpdate {
 		self.renderModules();
 		self.updateText();
 		self.updateTextPreview();
-
-		// Stop voices when leaving/reloading the page
-		window.addEventListener("unload", function(e){
-			responsiveVoice.cancel();
-		}, false);
 		
 
 		// How can I create a TogglePlayButton and attach it to an existing 
 		// DOM element, instead of having to document.createElement()?
-		var togglePlay = new TogglePlayButton({
+		self.voiceControls = new VoiceControls({
 			audioUpdate: self
 		});
-		self.mediaControlsContainer.appendChild(togglePlay.render());
 	}
 
 	// Runs the first time Audio Update runs in the browser

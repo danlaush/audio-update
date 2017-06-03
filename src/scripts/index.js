@@ -1,3 +1,5 @@
 var AudioUpdate = require('./AudioUpdate');
-console.log('loading the audio update'); 
-var myUpdate = new AudioUpdate();
+var VoiceControls = require('./VoiceControls');
+responsiveVoice.OnVoiceReady = function() {
+	var myUpdate = new AudioUpdate();
+}
