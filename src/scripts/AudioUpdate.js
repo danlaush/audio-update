@@ -6,8 +6,6 @@ const SELECTORS = {
 	modulesContainer: 'modules',
 	textInput: 'textInput',
 	updateScriptButton: 'updateScript',
-	playButton: 'play',
-	stopButton: 'stop',
 	saveButton: 'save',
 	loadButton: 'load',
 	deleteButton: 'delete',

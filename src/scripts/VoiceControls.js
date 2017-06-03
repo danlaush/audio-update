@@ -3,7 +3,8 @@ var TogglePlayButton = require('./components/TogglePlayButton');
 const SELECTORS = {
 	voiceControlsContainer: 'voiceControls',
 	togglePlayButton: 'togglePlay',
-	stopButton: 'stop'
+	stopButton: 'stop',
+	voicesList: 'voicesList'
 }
 
 class VoiceControls {
@@ -30,7 +31,16 @@ class VoiceControls {
 			audioUpdate: self.audioUpdate
 		});
 
-
+		self.voicesList = document.getElementById(SELECTORS.voicesList);
+		var voices = self.getVoices();
+		var voicesHtml = voices.map(function(voice) {
+			var option = document.createElement('option');
+			option.value = voice.name;
+			option.innerHTML = voice.name;
+			return option.outerHTML;
+		});
+		console.log(self.voicesList);
+		self.voicesList.innerHTML = voicesHtml.join();
 
 		// Stop voices when leaving/reloading the page
 		window.addEventListener("unload", function(e){
@@ -38,8 +48,8 @@ class VoiceControls {
 		}, false);
 	}
 
-	getData() {
-		return 17;
+	getVoices() {
+		return responsiveVoice.getVoices();
 	}
 
 	speak() {
