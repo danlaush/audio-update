@@ -12,17 +12,10 @@ class AudioUpdateModule {
 
         this.type = (typeof props.type !== 'undefined') ? props.type : 'text';
         this.text = (typeof props.text !== 'undefined') ? props.text : 'Good morning';
-
-
-        // this.init();
-    }
-
-    init() {
-        console.log('AudioUpdateModule.init()');
-
     }
 
     getData() {
+        console.log('AudioUpdateModule.getData()');
         return {
             type: this.type,
             text: this.text
@@ -30,20 +23,26 @@ class AudioUpdateModule {
     }
 
     render() {
+        var self = this;
         console.log('AudioUpdateModule.render()');
         var container = document.createElement('div');
         container.className = 'module';
-        container.dataset.moduleType = this.type;
+        container.dataset.moduleType = self.type;
         var label = document.createElement('label');
-        var labelText = document.createTextNode(utils.strUcFirst(this.type));
+        var labelText = document.createTextNode(utils.strUcFirst(self.type));
         // label.htmlFor = key;
         label.appendChild(labelText);
         var el = document.createElement('textarea');
         // el.id = key;
-        el.value = this.text;
+        el.value = self.text;
         label.appendChild(el);
         container.appendChild(label);
-        
+        var deleteButton = document.createElement('button');
+        deleteButton.innerHTML = "Delete";
+        deleteButton.addEventListener('click', self.deleteSelf.bind(this));
+        container.appendChild(deleteButton);
+
+        self.domElement = container;
         return container;
     }
 
@@ -83,6 +82,12 @@ class AudioUpdateModule {
         // var current = moment().format('dddd, MMMM Do');
         // text += ' ' + current;
         return updatedText;
+    }
+
+    deleteSelf() {
+        console.log('AudioUpdateModule.deleteSelf()');
+        console.log(this);
+        delete this.domElement;
     }
 }
 

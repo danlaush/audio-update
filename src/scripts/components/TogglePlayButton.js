@@ -1,7 +1,8 @@
-// var AudioUpdateModule = require('./AudioUpdateModule');
+// var AudioUpdate = require('./AudioUpdateModule');
 
 const SELECTORS = {
-	togglePlay: 'togglePlay'
+	togglePlay: 'togglePlay',
+	playTest: 'playTest'
 }
 
 // Toggle Play Button is a <button> that controls the 
@@ -9,37 +10,86 @@ const SELECTORS = {
 class TogglePlayButton {
 	constructor(props) {
 		console.log('TogglePlayButton.constructor()');
-
+		var self = this;
         if(typeof props === 'undefined') props = {};
-        this.playCallback = (typeof props.playCallback !== 'undefined') ? props.playCallback : 'text';
 
-		this.play = true;
-		this.dirty = false;
+
+		if(typeof props.element === 'undefined') {
+			return new Error("props.element not defined");
+		}
+		if(typeof props.audioUpdate === 'undefined') {
+			return new Error("props.audioUpdate not defined");
+		}
+		if(typeof props.voiceControls === 'undefined') {
+			return new Error("props.voiceControls not defined");
+		}
+
+		self.element = props.element;
+		self.element.addEventListener('click', self.togglePlay.bind(this));
+
+		self.audioUpdate = props.audioUpdate;
+		self.voiceControls = props.voiceControls;
+		self.isPlaying = false;
+		self.isClean = true;
+		self.text = 'Click to Play';
+		self.element.innerHTML = self.text;
 	}
 
 	togglePlay() {
 		console.log('TogglePlayButton.togglePlay()');
-		var self = this;
-		self.TogglePlayButton.innerHTML = '';
-		if(self.play) { // currently playing
-			responsiveVoice.pause()
-			console.log('currently playing, will now pause');
-			self.TogglePlayButton.appendChild(document.createTextNode('Click to Play'));
-		} else { // currently paused
-			responsiveVoice.resume()
-			console.log('currently paused, will now play');
-			self.TogglePlayButton.appendChild(document.createTextNode('Click to Pause'));
+		if(this.isClean) {
+			this.firstPlay();
+			return;
 		}
-		self.play = !self.play;
+		this.innerHTML = '';
+		if(this.isPlaying) {
+			this.voiceControls.pause()
+		} else { // currently paused
+			this.voiceControls.resume()
+		}
+		this.setText();
+		this.renderText();
+		this.isPlaying = !this.isPlaying;
 	}
 
-	render() {
+	firstPlay() {
+		console.log('TogglePlayButton.firstPlay()');
 		var self = this;
-		self.TogglePlayButton = document.createElement('button');
-		self.TogglePlayButton.classList = "button button--toggle-play";
-		self.TogglePlayButton.appendChild(document.createTextNode('Click to Pause'));
-		self.TogglePlayButton.addEventListener('click', self.togglePlay.bind(this));
-		return self.TogglePlayButton;
+		self.setText();
+		self.renderText();
+		self.voiceControls.speak();
+		self.isClean = false;
+		self.isPlaying = true;
+	}
+
+	prePlay() {
+		console.log('TogglePlayButton.prePlay()');
+	}
+
+	reset() {
+		console.log('TogglePlayButton.reset()');
+		this.setText('Play');
+		this.renderText();
+		this.isClean = true;
+		this.isPlaying = false;
+	}
+
+	setText(text) {
+		console.log('TogglePlayButton.setText()');
+		if(text) {
+			this.text = text;
+			return;
+		}
+		if(this.isPlaying === false) {
+			this.text = 'Pause';
+		} else { // isPaused
+			this.text = 'Play';
+		}
+	}
+
+	renderText() {
+		console.log('TogglePlayButton.renderText()');
+		this.element.innerHTML = this.text;
 	}
 }
 

@@ -29,3 +29,5 @@ These are not in order. And probably don't make much sense.
 - [x] BUG: Save button doesn't trigger update of textPreview
 - [ ] Feature: ResponsiveVoice cuts text up into <100 char sections. Find a way to visualise+suggest ways to improve your text to improve your experience with the automated voice. When not managed, speech can feel stilted and awkward when it pauses to fetch the next 100chars of speech.
 - [ ] BUG: ResponsiveVoice doesn't stop when browser refreshes
+- [ ] TogglePlayButton [extends HTMLElement](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements/Custom_Elements_with_Classes)? To add functionality directly to DOM elements, have access to more data about element 
+- [ ]  
