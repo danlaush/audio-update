@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "watchify src/scripts/index.js -o scripts/index.js -t [ babelify --presets [ es2015 ] ] -v --debug",
-    "build": "browserify src/scripts/index.js -o scripts/index.js -t [ babelify --presets [ es2015 ] ]"
+    "build": "browserify src/scripts/index.js -o scripts/index.js -t [ babelify --presets [ es2015 ] ] -t [ stripify ] -t [ uglifyify -x .js ]"
   },
   "repository": {
     "type": "git",
