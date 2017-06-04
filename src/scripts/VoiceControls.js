@@ -31,6 +31,7 @@ class VoiceControls {
 			audioUpdate: self.audioUpdate
 		});
 
+		// construct list of voice profiles
 		self.voicesList = document.getElementById(SELECTORS.voicesList);
 		var voices = self.getVoices();
 		var voicesHtml = voices.map(function(voice) {
@@ -39,8 +40,13 @@ class VoiceControls {
 			option.innerHTML = voice.name;
 			return option.outerHTML;
 		});
-		console.log(self.voicesList);
+		self.voice = self.audioUpdate.getVoice();
 		self.voicesList.innerHTML = voicesHtml.join();
+		console.log('self.voice: ', self.voice);
+		self.voicesList.value = self.voice;
+		console.log(self.voicesList.options[voicesList.selectedIndex])
+		// update self.voice when voiceList value changes
+		self.voicesList.addEventListener('change', self.updateVoice.bind(this));
 
 		// Stop voices when leaving/reloading the page
 		window.addEventListener("unload", function(e){
@@ -49,15 +55,28 @@ class VoiceControls {
 	}
 
 	getVoices() {
+		console.log('VoiceControls.getVoices()');
 		return responsiveVoice.getVoices();
+	}
+
+	getVoice() {
+		console.log('VoiceControls.getVoice()');
+		return this.voice; 
+	}
+
+	updateVoice() {
+		console.log('VoiceControls.updateVoice()');
+		console.log(self.voicesList.options[voicesList.selectedIndex].value);
+		this.voice = self.voicesList.options[voicesList.selectedIndex].value;
 	}
 
 	speak() {
 		console.log('VoiceControls.speak()');
 		var self = this;
+
 		responsiveVoice.speak(
 			self.audioUpdate.getText(), 
-			self.audioUpdate.getVoice(),
+			self.getVoice(),
 			{
 				onend: self.reset.bind(self)
 			}

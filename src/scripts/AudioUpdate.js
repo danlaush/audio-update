@@ -41,6 +41,7 @@ class AudioUpdate {
 		if(self.data === null) {
 			self.init();
 		}
+		console.log(self.data.voice);
 
 		self.buildModulesFromData();
 		self.renderModules();
@@ -60,6 +61,7 @@ class AudioUpdate {
 	init() {
 		console.log('AudioUpdate.init()');
 		var defaultProps = {
+			voice: 'UK English Female',
 			modules: [
 				{type: 'text', text: 'Good morning Daniel.'},
 				{type: 'date', text: 'Today is {dddd} {MMM} {Do} .'},
@@ -119,7 +121,8 @@ class AudioUpdate {
 	}
 
 	getVoice() {
-		return this.voice; 
+		console.log('this.voice ',this.data.voice);
+		return this.data.voice; 
 	}
 
 	updateText() {
@@ -142,7 +145,7 @@ class AudioUpdate {
 	updateData() {
 		console.log('AudioUpdate.updateData()');
 		var data = {};
-		// TODO store voice
+		data.voice = this.voiceControls.getVoice();
 		console.log('this.modules', this.modules);
 		data.modules = this.modules.map(function(module) {
 			console.log(module);
@@ -163,6 +166,7 @@ class AudioUpdate {
 	saveToStorage() {
 		console.log('AudioUpdate.saveToStorage()');
 		var self = this;
+		console.log('data: ', self.data);
 		if (typeof(Storage) !== "undefined") {
 			// Code for localStorage/sessionStorage.
 			localStorage.setItem('audio-update', JSON.stringify(self.data));
@@ -190,16 +194,6 @@ class AudioUpdate {
 		} else {
 			alert('Sorry, your browser doesn\'t support Local Storage. Please upgrade to a newer browser.');
 		}
-	}
-
-	speak() {
-		console.log('AudioUpdate.speak()');
-		responsiveVoice.speak(this.text, this.voice);
-	}
-
-	stopSpeaking() {
-		console.log('AudioUpdate.stopSpeaking()');
-		responsiveVoice.cancel();
 	}
 }
 
