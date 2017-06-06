@@ -42,9 +42,7 @@ class VoiceControls {
 		});
 		self.voice = self.audioUpdate.getVoice();
 		self.voicesList.innerHTML = voicesHtml.join();
-		console.log('self.voice: ', self.voice);
 		self.voicesList.value = self.voice;
-		console.log(self.voicesList.options[voicesList.selectedIndex])
 		// update self.voice when voiceList value changes
 		self.voicesList.addEventListener('change', self.updateVoice.bind(this));
 
@@ -66,7 +64,6 @@ class VoiceControls {
 
 	updateVoice() {
 		console.log('VoiceControls.updateVoice()');
-		console.log(self.voicesList.options[voicesList.selectedIndex].value);
 		this.voice = self.voicesList.options[voicesList.selectedIndex].value;
 	}
 
@@ -101,12 +98,6 @@ class VoiceControls {
 		console.log('VoiceControls.stopSpeaking()');
 		responsiveVoice.cancel();
 		this.togglePlayButton.reset();
-	}
-
-	render() {
-		console.log('VoiceControls.render()');
-		var self = this;
-		// self.container.appendChild(self.TogglePlayButton.render());
 	}
 }
 

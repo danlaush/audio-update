@@ -1,5 +1,6 @@
 var AudioUpdateModule = require('./AudioUpdateModule');
 var VoiceControls = require('./VoiceControls');
+var dragula = require('dragula');
 
 const SELECTORS = {
 	textPreview: 'textPreview',
@@ -22,7 +23,12 @@ class AudioUpdate {
 		var self = this;
 
 		self.textPreview = document.getElementById(SELECTORS.textPreview);
-		self.modulesContainer = document.getElementById(SELECTORS.modulesContainer);		
+		self.modulesContainer = document.getElementById(SELECTORS.modulesContainer);
+
+		console.log(self.modulesContainer);	
+		dragula([self.modulesContainer], {
+
+		});	
 
 		// self.stopButton = document.getElementById(SELECTORS.stopButton);
 		// self.stopButton.addEventListener('click', self.stopSpeaking.bind(this));
@@ -41,7 +47,6 @@ class AudioUpdate {
 		if(self.data === null) {
 			self.init();
 		}
-		console.log(self.data.voice);
 
 		self.buildModulesFromData();
 		self.renderModules();
@@ -117,11 +122,12 @@ class AudioUpdate {
 	}
 
 	getText() {
+		console.log('AudioUpdate.getText()');
 		return this.text;
 	}
 
 	getVoice() {
-		console.log('this.voice ',this.data.voice);
+		console.log('AudioUpdate.getVoice()');
 		return this.data.voice; 
 	}
 
@@ -146,9 +152,7 @@ class AudioUpdate {
 		console.log('AudioUpdate.updateData()');
 		var data = {};
 		data.voice = this.voiceControls.getVoice();
-		console.log('this.modules', this.modules);
 		data.modules = this.modules.map(function(module) {
-			console.log(module);
 			return module.getData();
 		});
 		this.data = data;
@@ -166,7 +170,6 @@ class AudioUpdate {
 	saveToStorage() {
 		console.log('AudioUpdate.saveToStorage()');
 		var self = this;
-		console.log('data: ', self.data);
 		if (typeof(Storage) !== "undefined") {
 			// Code for localStorage/sessionStorage.
 			localStorage.setItem('audio-update', JSON.stringify(self.data));

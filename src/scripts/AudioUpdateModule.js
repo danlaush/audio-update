@@ -87,16 +87,12 @@ class AudioUpdateModule {
             }
         });
         var updatedText = updatedTextArray.join(' ');
-        // crunch array back together with spaces
-        // var current = moment().format('dddd, MMMM Do');
-        // text += ' ' + current;
         return updatedText;
     }
 
     deleteSelf() {
         console.log('AudioUpdateModule.deleteSelf()');
         this.modulesContainer.removeChild(this.domElement);
-        // delete this.domElement;
     }
 }
 

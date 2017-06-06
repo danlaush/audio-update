@@ -24,6 +24,7 @@
     "babelify": "^7.3.0"
   },
   "dependencies": {
+    "dragula": "^3.7.2",
     "moment": "^2.18.1"
   }
 }

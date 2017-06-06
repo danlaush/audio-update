@@ -20,12 +20,17 @@ body {
 	border: 1px solid black;
 }
 
-button, input, textarea {
+button, input, textarea, select {
 	font-size: 1rem;
 }
 
 .module {
+	padding: 10px;
 	margin-bottom: 10px;
+}
+
+.module:nth-child(odd) {	
+	background-color: #b5b5b5;
 }
 
 .modules {
