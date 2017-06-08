@@ -5,7 +5,9 @@
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "watchify src/scripts/index.js -o scripts/index.js -t [ babelify --presets [ es2015 ] ] -v --debug",
+    "scripts": "watchify src/scripts/index.js -o scripts/index.js -t [ babelify --presets [ es2015 ] ] -v --debug",
+    "server": "browser-sync start -s",
+    "dev": "npm-run-all --parallel scripts server",
     "build": "browserify src/scripts/index.js -o scripts/index.js -t [ babelify --presets [ es2015 ] ] -t [ stripify ] -t [ uglifyify -x .js ]"
   },
   "repository": {
@@ -21,7 +23,11 @@
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
-    "babelify": "^7.3.0"
+    "babelify": "^7.3.0",
+    "browser-sync": "^2.18.12",
+    "browserify": "^14.4.0",
+    "npm-run-all": "^4.0.2",
+    "watchify": "^3.9.0"
   },
   "dependencies": {
     "dragula": "^3.7.2",
