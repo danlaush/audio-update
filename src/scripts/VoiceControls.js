@@ -9,6 +9,7 @@ const SELECTORS = {
 
 class VoiceControls {
 	constructor(props) {
+		console.log('hello');
 		console.log('VoiceControls.constructor()');
 
         if(typeof props === 'undefined') props = {};

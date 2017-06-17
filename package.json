@@ -5,10 +5,19 @@
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "scripts": "watchify src/scripts/index.js -o scripts/index.js -t [ babelify --presets [ es2015 ] ] -v --debug",
-    "server": "browser-sync start -s",
-    "dev": "npm-run-all --parallel scripts server",
-    "build": "browserify src/scripts/index.js -o scripts/index.js -t [ babelify --presets [ es2015 ] ] -t [ stripify ] -t [ uglifyify -x .js ]"
+    "clean": "rimraf dist/*",
+    "build": "npm run clean && npm-run-all --parallel build:*",
+    "watch": "npm run build && npm-run-all --parallel watch:*",
+    "build:images": "cp -r src/images/ dist/images/",
+    "build:styles": "cp -r src/styles dist/styles",
+    "build:scripts": "mkdirp dist/scripts && browserify src/scripts/index.js -o dist/scripts/index.js -t [ babelify --presets [ es2015 ] ] -t [ stripify ] -t [ uglifyify -x .js ]",
+    "build:templates": "twig \"src/**/*.html\" dist/",
+    "watch:images": "chokidar \"src/images\" -c \"npm run build:images\" --polling",
+    "watch:styles": "chokidar \"src/styles\" -c \"npm run build:styles\" --polling",
+    "watch:scripts": "watchify \"src/scripts\" -o dist/scripts/index.js -t [ babelify --presets [ es2015 ] ] -v --debug",
+    "watch:templates": "chokidar \"src/**/*.html\" -c \"npm run build:templates\" --polling",
+    "server": "browser-sync start -s \"./dist\"",
+    "dev": "npm-run-all clean --parallel watch server"
   },
   "repository": {
     "type": "git",
@@ -26,7 +35,11 @@
     "babelify": "^7.3.0",
     "browser-sync": "^2.18.12",
     "browserify": "^14.4.0",
+    "chokidar-cli": "^1.2.0",
+    "mkdirp": "^0.5.1",
     "npm-run-all": "^4.0.2",
+    "rimraf": "^2.6.1",
+    "twig-cli": "^0.1.0",
     "watchify": "^3.9.0"
   },
   "dependencies": {
