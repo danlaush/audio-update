@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Audio Update</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="styles/index.css">
+	<link rel="stylesheet" type="text/css" href="node_modules/dragula/dist/dragula.css">
+</head>
+<body>
+<div class="container">
+	<h1>{{'Greetings'|capitalize}}</h1>
+	<h1>Audio Update</h1>
+	<h2>Update Preview</h2>
+	<blockquote id="textPreview"></blockquote>
+	<div id="voiceControls" class="voice-controls">
+		<button id="togglePlay">Play</button> 
+		<button id="stop">Stop</button> 
+		<select id="voicesList">
+			<option value="0">UK English Female</option>
+		</select>
+	</div>
+	<h2>Modules</h2>
+	<div id="modules" class="modules"></div>
+	<button id="save">Save</button> <button id="reset">{% include 'images/icons/core/trash-2.svg' %}</button> <button id="addModule">Add a module</button>
+</div>
+<script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+<script type="text/javascript" src="scripts/index.js"></script>
+</body>
+</html>

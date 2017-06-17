@@ -1,5 +1,6 @@
 var AudioUpdateModule = require('./AudioUpdateModule');
 var VoiceControls = require('./VoiceControls');
+var dragula = require('dragula');
 
 const SELECTORS = {
 	textPreview: 'textPreview',
@@ -22,7 +23,12 @@ class AudioUpdate {
 		var self = this;
 
 		self.textPreview = document.getElementById(SELECTORS.textPreview);
-		self.modulesContainer = document.getElementById(SELECTORS.modulesContainer);		
+		self.modulesContainer = document.getElementById(SELECTORS.modulesContainer);
+
+		console.log(self.modulesContainer);	
+		dragula([self.modulesContainer], {
+
+		});	
 
 		// self.stopButton = document.getElementById(SELECTORS.stopButton);
 		// self.stopButton.addEventListener('click', self.stopSpeaking.bind(this));
@@ -60,6 +66,7 @@ class AudioUpdate {
 	init() {
 		console.log('AudioUpdate.init()');
 		var defaultProps = {
+			voice: 'UK English Female',
 			modules: [
 				{type: 'text', text: 'Good morning Daniel.'},
 				{type: 'date', text: 'Today is {dddd} {MMM} {Do} .'},
@@ -115,11 +122,13 @@ class AudioUpdate {
 	}
 
 	getText() {
+		console.log('AudioUpdate.getText()');
 		return this.text;
 	}
 
 	getVoice() {
-		return this.voice; 
+		console.log('AudioUpdate.getVoice()');
+		return this.data.voice; 
 	}
 
 	updateText() {
@@ -142,10 +151,8 @@ class AudioUpdate {
 	updateData() {
 		console.log('AudioUpdate.updateData()');
 		var data = {};
-		// TODO store voice
-		console.log('this.modules', this.modules);
+		data.voice = this.voiceControls.getVoice();
 		data.modules = this.modules.map(function(module) {
-			console.log(module);
 			return module.getData();
 		});
 		this.data = data;
@@ -190,16 +197,6 @@ class AudioUpdate {
 		} else {
 			alert('Sorry, your browser doesn\'t support Local Storage. Please upgrade to a newer browser.');
 		}
-	}
-
-	speak() {
-		console.log('AudioUpdate.speak()');
-		responsiveVoice.speak(this.text, this.voice);
-	}
-
-	stopSpeaking() {
-		console.log('AudioUpdate.stopSpeaking()');
-		responsiveVoice.cancel();
 	}
 }
 

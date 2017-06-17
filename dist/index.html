@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Audio Update</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="styles/index.css">
+	<link rel="stylesheet" type="text/css" href="node_modules/dragula/dist/dragula.css">
+</head>
+<body>
+<div class="container">
+	<h1>Greetings</h1>
+	<h1>Audio Update</h1>
+	<h2>Update Preview</h2>
+	<blockquote id="textPreview"></blockquote>
+	<div id="voiceControls" class="voice-controls">
+		<button id="togglePlay">Play</button> 
+		<button id="stop">Stop</button> 
+		<select id="voicesList">
+			<option value="0">UK English Female</option>
+		</select>
+	</div>
+	<h2>Modules</h2>
+	<div id="modules" class="modules"></div>
+	<button id="save">Save</button> <button id="reset"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+	<title>Reset</title>
+    <polyline points="3 6 5 6 21 6"/>
+    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+    <line x1="10" y1="11" x2="10" y2="17"/>
+    <line x1="14" y1="11" x2="14" y2="17"/>
+</svg>
+</button> <button id="addModule">Add a module</button>
+</div>
+<script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+<script type="text/javascript" src="scripts/index.js"></script>
+</body>
+</html>
