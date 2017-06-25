@@ -1,5 +1,5 @@
 # audio-update
-A tool to deliver an automated, customisable audio update. Create your own personal Jarvis - combine and craft news, weather, time & date, and more to create the audio update that's right for you. [View the project](https://danlaush.github.io/audio-update)
+A tool to deliver an automated, customisable audio update. Create your own personal Jarvis - combine and craft news, weather, time & date, and more to create the audio update that's right for you. [View the project](https://danlaush.github.io/audio-update/dist/)
 
 ## Goal
 In the morning, be woken up by the morning update. The audio script is a customizable set of modules that have audio output, such as the weather, news updates, music, or custom text. Each day, a program generates new text-based content (latest news, calendar events & meetings) sent to a TTS service and automatically generates a new audio file.
