@@ -6,7 +6,7 @@ In the morning, be woken up by the morning update. The audio script is a customi
 
 ## Example
 
-* Text: "Good morning, Neneh and Dan."
+* Text: "Good morning Dan."
 * Date/Time: "It is 6:45 in the morning on Tuesday May 18th."
 * Weather: "BOM says it will rain this afternoon, with a high of 18 degrees. Remember to bring an umbrella."
 * News: "Here are a selection of headlines from the BBC. Trump unveils new plan to fight inflation. Syria crisis worsening, says UNHCR."
